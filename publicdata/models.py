@@ -1,5 +1,5 @@
 import json
-from publicdata.data_requests import propertyData
+import requests as req
 
 from django.db import models
 from django.http import JsonResponse
@@ -7,22 +7,24 @@ from django.http import JsonResponse
 # Create your models here.
 class AjaxCall(models.Model):
 
-    def makeCall(url, data):
+    def makeCall(url, data, action):
         # url is string of fully qualified url
         # data is dictionary of data to send by post or get
+        jsonData = {}
         success = 'false'
-        responseData = propertyData()
+        if action == 'post':
+            responseData = req.post(url, data = data)
+        else:
+            responseData = req.get(url, headers = {'Accept': 'application/json'}, params = data) 
 
-        # # print(responseData.status_code)
-        # # print(responseData.json())
-
-        # if responseData.status_code == 200:
-        #     success = 'true'
+        if responseData.status_code == 200:
+            success = 'true'
+            jsonData = responseData.json()
 
         returnData = {
-        'response_data': responseData.get('response_data', {}),
-        'status_code': responseData.get('status_code', '500'),
-        'success': success
+            'response_data':jsonData,
+            'status_code': responseData.status_code,
+            'success': success
         }
-
+        
         return JsonResponse(returnData)

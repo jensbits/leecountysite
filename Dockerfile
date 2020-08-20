@@ -12,4 +12,5 @@ RUN pip install pip -U
 ADD requirements.txt /code/
 #Install dependencies
 RUN pip install -r requirements.txt
+RUN pip install requests
 ADD . /code/

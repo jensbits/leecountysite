@@ -1,19 +1,49 @@
 class SearchForm extends React.Component {
     constructor(props) {
       super(props);
-      this.state = {value: ''};
+      this.state = {
+        values: {
+          lastName: "",
+          firstName: ""
+        },
+        isSubmitting: false,
+        isError: false
+      };
   
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
   
     handleChange(event) {
-      this.setState({value: event.target.value});
+      // this.setState({value: event.target.value});
+      this.setState({
+        values: { ...this.state.values, [event.target.name]: event.target.value }
+      });
     }
   
     handleSubmit(event) {
-      alert('A last name was submitted: ' + this.state.value);
+      console.log('A last name was submitted: ' + this.state.values.lastName);
       event.preventDefault();
+      console.log(this.state);
+      this.setState({ isSubmitting: true });
+
+      let csrftoken = getCookie('csrftoken');
+  
+      fetch("/ajx_propertydata", {
+          method: "POST",
+          body: JSON.stringify(this.state.values),
+          headers: { "X-CSRFToken": csrftoken }
+      })
+      .then(response => {
+          this.setState({ isSubmitting: false });
+          return response.json();
+      })
+      .then(data => {
+          console.log(data);
+          !data.hasOwnProperty("error")
+              ? this.setState({ message: data.success })
+              : this.setState({ message: data.error, isError: true });
+      });
     }
 
     componentDidMount() {
@@ -25,6 +55,7 @@ class SearchForm extends React.Component {
            event.preventDefault();
            event.stopPropagation();
            if (form.checkValidity() === false) {
+            this.setState({ isError: true })
            } 
           form.classList.add('was-validated');
         }, false);
@@ -52,6 +83,9 @@ class SearchForm extends React.Component {
             <button type="submit" className="btn btn-primary mb-2">Submit</button>
           </div>
         </div>
+        <div className={'message ${this.state.isError && "error"}'}>
+          {this.state.isSubmitting ? "Searching..." : this.state.message}
+        </div>
       </form>
       );
     }
@@ -61,3 +95,21 @@ class SearchForm extends React.Component {
     <SearchForm />,
     document.getElementById('root')
   );
+
+// The following function are copying from 
+// https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}

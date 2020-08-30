@@ -18,7 +18,8 @@ def ajx_autocomplete(request):
 
     ajxUrl  = 'https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Autocomplete'
     data    = {'q':'kang'}
-    response = AjaxCall.makeCall(ajxUrl, data, 'get')
+    ajxCall = AjaxCall(ajxUrl, data, 'get')
+    response = ajxCall.makeCall()
 
     return JsonResponse(response.get('response_data', ""), safe=False)
 
@@ -28,6 +29,7 @@ def ajx_propertydata(request):
 
     ajxUrl  = 'https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Records'
     data    = {'value':'kang jennifer', 'direct': 'false', 'skip': '0'}
-    response = AjaxCall.makeCall(ajxUrl, data, 'post')
+    ajxCall = AjaxCall(ajxUrl, data, 'post')
+    response = ajxCall.makeCall()
 
     return response

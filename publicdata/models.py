@@ -27,4 +27,4 @@ class AjaxCall(models.Model):
             'success': success
         }
         
-        return JsonResponse(returnData)
+        return returnData

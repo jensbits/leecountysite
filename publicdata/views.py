@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from publicdata.models import AjaxCall
 
+import json
+
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -18,7 +20,7 @@ def ajx_autocomplete(request):
     data    = {'q':'kang'}
     response = AjaxCall.makeCall(ajxUrl, data, 'get')
 
-    return response
+    return JsonResponse(response.get('response_data', ""), safe=False)
 
 def ajx_propertydata(request):
     # propertyData = req.post('https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Records', 

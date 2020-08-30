@@ -60,11 +60,26 @@ class SearchForm extends React.Component {
           form.classList.add('was-validated');
         }, false);
       });
+
+      $("#lastName").autocomplete(
+        {source: "/ajx_autocomplete", 
+        minLength: 2,
+        select: function( event, ui ) {
+          $("#lastName").val( ui.item.Value );
+          return false;
+        } }
+      ).autocomplete( "instance" )._renderItem = function( ul, item ) {
+        return $( "<li>" )
+          .append( item.Value )
+          .appendTo( ul );
+      };
+
     }
   
     render() {
       return (
-        <form novalidate="true"  id="searchForm" className="needs-validation" method="post" onSubmit={this.handleSubmit}  ref={el => this.el = el}>
+        <form novalidate="true"  id="searchForm" className="needs-validation" method="post" 
+        onSubmit={this.handleSubmit}  ref={el => this.el = el} autoComplete="off">
         <div className="row">
           <div className="col">
             <label className="sr-only" htmlFor="lastName">Last Name</label>
@@ -112,4 +127,27 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+function autocompleteSearch(value){
+  let csrftoken = getCookie('csrftoken');
+
+  fetch("/ajx_autocomplete", {
+    method: "POST",
+    body: value,
+    headers: { "X-CSRFToken": csrftoken }
+  })
+  .then(response => {
+      // this.setState({ isSubmitting: false });
+      return response.json();
+  })
+  .then(data => {
+      console.log(data.response_data);
+      return data.response_data
+      // !data.hasOwnProperty("error")
+      //     ? this.setState({ message: data.success })
+      //     : this.setState({ message: data.error, isError: true });
+          
+  });
+
 }

@@ -6,14 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>Private Public Data</title>
-
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-  
     <link rel="stylesheet" href="{% static 'css/sticky-footer.css' %}">
-  
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
   </head>
 
   <body  class="d-flex flex-column h-100"></body>>
@@ -26,29 +23,9 @@
     <!-- Begin page content -->
     <main role="main" class="flex-shrink-0">
       <div class="container">
-      <h1 class="mt-5">Private Public Data</h1>
-      <p class="lead">Search</p>
-      <div id="root"></div>
-      <!-- <form id="searchForm" class="needs-validation" method="post" data-url="" novalidate>
-        <div class="row">
-          <div class="col">
-            <label class="sr-only" for="lastName">Last Name</label>
-            <input name="lastName" type="text" class="form-control mb-2 mr-sm-2" id="lastName" placeholder="Last Name" required>
-            <div class="invalid-feedback">
-              Please provide a last name.
-            </div>
-          </div>
-          <div class="col">
-            <label class="sr-only" for="firstName">First Name (optional)</label>
-            <div class="input-group mb-2 mr-sm-2">
-              <input name="firstName" type="text" class="form-control" id="firstName" placeholder="First Name (optional)">
-            </div>
-          </div>
-          <div class="col">
-            <button type="submit" class="btn btn-primary mb-2">Submit</button>
-          </div>
-        </div>
-      </form> -->
+        <h1 class="mt-5">Private Public Data</h1>
+        <p class="lead">Search</p>
+        <div id="root"></div>
       </div>
     </main>
 
@@ -57,15 +34,16 @@
         <span class="text-muted">Jennifer Kang</span>
       </div>
     </footer>
-   <!-- Optional JavaScript -->
+
+    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     <script src="{% static 'js/react-script.js' %}" type = "text/babel"></script>
     <script src="{% static 'js/script.js' %}"></script>
-   
   </body>
 </html>

@@ -3,8 +3,7 @@ class SearchForm extends React.Component {
       super(props);
       this.state = {
         values: {
-          lastName: "",
-          firstName: ""
+          name: ""
         },
         isSubmitting: false,
         isError: false
@@ -22,7 +21,7 @@ class SearchForm extends React.Component {
     }
   
     handleSubmit(event) {
-      console.log('A last name was submitted: ' + this.state.values.lastName);
+      console.log('A name was submitted: ' + this.state.values.name);
       event.preventDefault();
       console.log(this.state);
       this.setState({ isSubmitting: true });
@@ -61,11 +60,11 @@ class SearchForm extends React.Component {
         }, false);
       });
 
-      $("#lastName").autocomplete(
+      $("#name").autocomplete(
         {source: "/ajx_autocomplete", 
         minLength: 2,
         select: function( event, ui ) {
-          $("#lastName").val( ui.item.Value );
+          $("#name").val( ui.item.Value );
           return false;
         } }
       ).autocomplete( "instance" )._renderItem = function( ul, item ) {
@@ -82,20 +81,14 @@ class SearchForm extends React.Component {
         onSubmit={this.handleSubmit}  ref={el => this.el = el} autoComplete="off">
         <div className="row">
           <div className="col">
-            <label className="sr-only" htmlFor="lastName">Last Name</label>
-            <input name="lastName" type="text" className="form-control mb-2 mr-sm-2" id="lastName" placeHolder="Last Name" required value={this.state.value} onChange={this.handleChange} />
+            <label className="sr-only" htmlFor="name">Name</label>
+            <input name="name" type="text" className="form-control mb-2 mr-sm-2" id="name" placeHolder="Name" required value={this.state.value} onChange={this.handleChange} />
             <div className="invalid-feedback">
-              Please provide a last name.
+              Please provide a name.
             </div>
           </div>
           <div className="col">
-            <label className="sr-only" htmlFor="firstName">First Name (optional)</label>
-            <div className="input-group mb-2 mr-sm-2">
-              <input name="firstName" type="text" className="form-control" id="firstName" placeHolder="First Name (optional)" />
-            </div>
-          </div>
-          <div className="col">
-            <button type="submit" className="btn btn-primary mb-2">Submit</button>
+            <button type="submit" className="btn btn-primary mb-2">Search</button>
           </div>
         </div>
         <div className={'message ${this.state.isError && "error"}'}>

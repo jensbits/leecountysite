@@ -32,4 +32,4 @@ def ajx_propertydata(request):
     ajxCall = AjaxCall(ajxUrl, data, 'post')
     response = ajxCall.makeCall()
 
-    return response
+    return JsonResponse(response)

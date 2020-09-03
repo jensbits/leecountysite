@@ -29,6 +29,7 @@ class AjaxCall(models.Model):
         returnData = {
             'response_data':jsonData,
             'status_code': responseData.status_code,
+            'request_data': self.data,
             'success': success
         }
         

@@ -30,9 +30,9 @@ class SearchForm extends React.Component {
   
       fetch("/ajx_propertydata", {
           method: "POST",
-          body: formData,
+          body: JSON.stringify({"nameQuery": this.state.values.nameQuery}),
           headers: { 
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "X-CSRFToken": csrftoken }
       })
       .then(response => {

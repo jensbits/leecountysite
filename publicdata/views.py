@@ -14,7 +14,7 @@ def data(request):
 def ajx_autocomplete(request):
     # autocomplete = req.get('https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Autocomplete',
     # headers={'Accept': 'application/json'},
-    # params={'q': 'kang jennifer'})
+    # params={'q': ''})
 
     ajxUrl  = 'https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Autocomplete'
     data    = {'q': request.GET.get('term')}
@@ -25,7 +25,7 @@ def ajx_autocomplete(request):
 
 def ajx_propertydata(request):
     # propertyData = req.post('https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Records', 
-    # data={'value':'kang jennifer', 'direct': 'false', 'skip': '0'})
+    # data={'value':'', 'direct': 'false', 'skip': '0'})
     postBody = json.loads(request.body.decode('utf-8'))
     ajxUrl  = 'https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Records'
     data    = {'value': postBody.get('nameQuery'), 'direct': 'false', 'skip': '0'}

@@ -6,7 +6,8 @@ class SearchForm extends React.Component {
           nameQuery: ""
         },
         isSubmitting: false,
-        isError: true
+        isError: true,
+        propertyData: []
       };
   
       this.handleChange = this.handleChange.bind(this);
@@ -41,6 +42,8 @@ class SearchForm extends React.Component {
       })
       .then(data => {
           console.log(data);
+          this.setState({propertyData: data.response_data.Records})
+          console.log(this.state.propertyData)
           !data.hasOwnProperty("error")
               ? this.setState({ message: data.success })
               : this.setState({ message: data.error, isError: true });
@@ -83,6 +86,7 @@ class SearchForm extends React.Component {
   
     render() {
       return (
+        <div>
         <form novalidate="true"  id="searchForm" className="needs-validation" method="post" onSubmit={this.handleSubmit}  
         ref={el => this.el = el} autoComplete="off">
         <div className="row">
@@ -101,6 +105,12 @@ class SearchForm extends React.Component {
           {this.state.isSubmitting ? "Searching..." : ""}
         </div>
       </form>
+      <ul>
+      { this.state.propertyData.map(propertyItem => 
+          <li>{propertyItem.Name}</li>
+         )}
+      </ul>
+      </div>
       );
     }
   }

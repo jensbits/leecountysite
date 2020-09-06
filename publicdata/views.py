@@ -33,3 +33,16 @@ def ajx_propertydata(request):
     response = ajxCall.makeCall()
 
     return JsonResponse(response)
+
+def ajx_vehicledata(request):
+    # propertyData = req.post('https://d1ebsyxxbc7tep.cloudfront.net/data/078970d5-d0c9-45ae-8491-99c87acb7810/Wildfire/Records', 
+    # data={'value':'', 'direct': 'false', 'skip': '0'})
+    postBody = json.loads(request.body.decode('utf-8'))
+    ajxUrl  = 'https://d1ebsyxxbc7tep.cloudfront.net/data/078970d5-d0c9-45ae-8491-99c87acb7810/Wildfire/Records'
+    data    = {'value': postBody.get('nameQuery'), 'direct': 'true', 'skip': '0'}
+    ajxCall = AjaxCall(ajxUrl, data, 'post')
+    response = ajxCall.makeCall()
+
+    return JsonResponse(response)
+
+    

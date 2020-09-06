@@ -7,7 +7,8 @@ class SearchForm extends React.Component {
         },
         isSubmitting: false,
         isError: true,
-        propertyData: []
+        propertyData: [],
+        vehicleData: []
       };
   
       this.handleChange = this.handleChange.bind(this);
@@ -40,14 +41,34 @@ class SearchForm extends React.Component {
           this.setState({ isSubmitting: false });
           return response.json();
       })
-      .then(data => {
-          console.log(data);
-          this.setState({propertyData: data.response_data.Records})
+      .then(propdata => {
+          console.log(propdata);
+          this.setState({propertyData: propdata.response_data.Records})
           console.log(this.state.propertyData)
-          !data.hasOwnProperty("error")
-              ? this.setState({ message: data.success })
-              : this.setState({ message: data.error, isError: true });
+          !propdata.hasOwnProperty("error")
+              ? this.setState({ message: propdata.success })
+              : this.setState({ message: propdata.error, isError: true });
       });
+
+      fetch("/ajx_vehicledata", {
+        method: "POST",
+        body: JSON.stringify({"nameQuery": this.state.values.nameQuery}),
+        headers: { 
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken }
+        })
+        .then(response => {
+            this.setState({ isSubmitting: false });
+            return response.json();
+        })
+        .then(vehdata => {
+            console.log(vehdata);
+            this.setState({vehicleData: vehdata.response_data.Records})
+            console.log(this.state.vehicleData)
+            !vehdata.hasOwnProperty("error")
+                ? this.setState({ message: vehdata.success })
+                : this.setState({ message: vehdata.error, isError: true });
+        });
     }
 
     componentDidMount() {
@@ -105,11 +126,32 @@ class SearchForm extends React.Component {
           {this.state.isSubmitting ? "Searching..." : ""}
         </div>
       </form>
-      <ul>
+      <h3>Property Results</h3>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Owner Name</th>
+            <th scope="col">Owner Address</th>
+            <th scope="col">Property Address</th>
+            <th scope="col">Value</th>
+            <th scope="col">Tax</th>
+            <th scope="col">Delinquent</th>
+          </tr>
+        </thead>
       { this.state.propertyData.map(propertyItem => 
-          <li>{propertyItem.Name}</li>
+          <tr>
+            <td>{propertyItem.OwnerName1}</td>
+            <td>{propertyItem.OwnerAddress.Line1}{propertyItem.OwnerAddress.Line2.length ? " " + propertyItem.OwnerAddress.Line2 : ""}, 
+            &nbsp;{propertyItem.OwnerAddress.City}, {propertyItem.OwnerAddress.State} {propertyItem.OwnerAddress.Zip}</td>
+            <td>{propertyItem.SitusAddress.Line1}, {propertyItem.SitusAddress.City != null ? propertyItem.SitusAddress.City + "," : ""}
+            {propertyItem.SitusAddress.State} 
+             {propertyItem.SitusAddress.Zip}</td>
+            <td>{propertyItem.Values.Appraised}</td>
+            <td>{propertyItem.Values.BaseTax} ({propertyItem.Year})</td>
+            <td>{propertyItem.isDelinquent ? "Yes" : "No"}</td>
+            </tr>
          )}
-      </ul>
+      </table>
       </div>
       );
     }

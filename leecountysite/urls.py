@@ -22,5 +22,6 @@ urlpatterns = [
     path('data', publicdata_views.data, name='data'),
     path('ajx_autocomplete', publicdata_views.ajx_autocomplete, name='ajx_autocomplete'),
     path('ajx_propertydata', publicdata_views.ajx_propertydata, name='ajx_propertydata'),
+    path('ajx_vehicledata',  publicdata_views.ajx_vehicledata, name='ajx_vehicledata'),
     path('admin/', admin.site.urls),
 ]

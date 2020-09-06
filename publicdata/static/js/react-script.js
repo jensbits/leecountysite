@@ -146,9 +146,32 @@ class SearchForm extends React.Component {
             <td>{propertyItem.SitusAddress.Line1}, {propertyItem.SitusAddress.City != null ? propertyItem.SitusAddress.City + "," : ""}
             {propertyItem.SitusAddress.State} 
              {propertyItem.SitusAddress.Zip}</td>
-            <td>{propertyItem.Values.Appraised}</td>
-            <td>{propertyItem.Values.BaseTax} ({propertyItem.Year})</td>
+            <td>{formatCurrency.format(propertyItem.Values.Appraised)}</td>
+            <td>{formatCurrency.format(propertyItem.Values.BaseTax)}<br />({propertyItem.Year})</td>
             <td>{propertyItem.isDelinquent ? "Yes" : "No"}</td>
+            </tr>
+         )}
+      </table>
+      <h3>Vehicle Results</h3>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Owner Name</th>
+            <th scope="col">Owner Address</th>
+            <th scope="col">Make/Model</th>
+            <th scope="col">Year</th>
+            <th scope="col">Color</th>
+
+          </tr>
+        </thead>
+      { this.state.vehicleData.map(vehicleItem => 
+          <tr>
+            <td>{vehicleItem.OwnerName1}</td>
+            <td>{vehicleItem.OwnerAddress.Line1}{vehicleItem.OwnerAddress.Line2.length ? " " + vehicleItem.OwnerAddress.Line2 : ""}, 
+            &nbsp;{vehicleItem.OwnerAddress.City}, {vehicleItem.OwnerAddress.State} {vehicleItem.OwnerAddress.Zip}</td>
+            <td>{vehicleItem.Make} {vehicleItem.Model}</td>
+            <td>{vehicleItem.ModelYear}</td>
+            <td>{vehicleItem.Color}</td>
             </tr>
          )}
       </table>
@@ -201,3 +224,8 @@ function autocompleteSearch(value){
   });
 
 }
+
+var formatCurrency = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});

@@ -1,49 +1,104 @@
 {% load static %}
 <!doctype html>
 <html lang="en" class="h-100">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Private Public Data</title>
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/sticky-footer.css' %}">
-    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
-  </head>
 
-  <body  class="d-flex flex-column h-100"></body>>
-    <header>
-      <!-- Fixed navbar -->
-      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="#">Fixed navbar</a>
-      </nav>
-    </header>
-    <!-- Begin page content -->
-    <main role="main" class="flex-shrink-0">
-      <div class="container">
-        <h1 class="mt-5">Private Public Data</h1>
-        <p class="lead">Search</p>
-        <div id="root"></div>
-      </div>
-    </main>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Private Public Data</title>
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/sticky-footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
+</head>
 
-    <footer class="footer mt-auto py-3">
-      <div class="container">
-        <span class="text-muted">Jennifer Kang</span>
-      </div>
-    </footer>
+<body class="d-flex flex-column h-100"></body>>
+<header>
+  <!-- Fixed navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">Fixed navbar</a>
+  </nav>
+</header>
+<!-- Begin page content -->
+<main role="main" class="flex-shrink-0">
+  <div class="container">
+    <h1 class="mt-5">Private Public Data</h1>
+    <p class="lead">Search</p>
+    <div id="root"></div>
+    <table class="table table-striped">
+      <tbody>
+        <tr class="odd">
+          <th>Renewal Month</th>
+          <th>Last Name Begins With</th>
+        </tr>
+        <tr class="even">
+          <td>January</td>
+          <td>A, D</td>
+        </tr>
+        <tr class="alt odd">
+          <td>February</td>
+          <td>B</td>
+        </tr>
+        <tr class="even">
+          <td>March</td>
+          <td>C, E</td>
+        </tr>
+        <tr class="alt odd">
+          <td>April</td>
+          <td>F, G, N</td>
+        </tr>
+        <tr class="even">
+          <td>May</td>
+          <td>H, O</td>
+        </tr>
+        <tr class="alt odd">
+          <td>June</td>
+          <td>M, I</td>
+        </tr>
+        <tr class="even">
+          <td>July</td>
+          <td>P, L</td>
+        </tr>
+        <tr class="alt odd">
+          <td>August</td>
+          <td>J, K, R</td>
+        </tr>
+        <tr class="even">
+          <td>September</td>
+          <td>Q, S, T</td>
+        </tr>
+        <tr class="alt odd">
+          <td>October</td>
+          <td>U, V, W, X, Y, Z</td>
+        </tr>
+        <tr class="even">
+          <td>November</td>
+          <td rowspan="2">Commercial and Fleet Vehicles (Except IRP), <br>Manufactured Homes, National Guard</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
-    <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
-    <script src="{% static 'js/react-script.js' %}" type = "text/babel"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-  </body>
+</main>
+
+<footer class="footer mt-auto py-3">
+  <div class="container">
+    <span class="text-muted">Jennifer Kang</span>
+  </div>
+</footer>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+<script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+<script src="{% static 'js/react-script.js' %}" type="text/babel"></script>
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+
 </html>

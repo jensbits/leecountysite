@@ -39,7 +39,7 @@ def ajx_vehicledata(request):
     # data={'value':'', 'direct': 'false', 'skip': '0'})
     postBody = json.loads(request.body.decode('utf-8'))
     ajxUrl  = 'https://d1ebsyxxbc7tep.cloudfront.net/data/078970d5-d0c9-45ae-8491-99c87acb7810/Wildfire/Records'
-    data    = {'value': postBody.get('nameQuery'), 'direct': 'true', 'skip': '0'}
+    data    = {'value': postBody.get('nameQuery'), 'direct': 'false', 'skip': '0'}
     ajxCall = AjaxCall(ajxUrl, data, 'post')
     response = ajxCall.makeCall()
 

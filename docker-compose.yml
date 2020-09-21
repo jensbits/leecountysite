@@ -6,5 +6,8 @@ services:
     command: "python3 manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
+      - ~/.aws/:/root/.aws:ro
+    environment:
+      - AWS_PROFILE=default
     ports:
       - "8000:8000"

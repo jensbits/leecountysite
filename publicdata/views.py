@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from publicdata.models import AjaxCall
+from publicdata.models import DynamoDb
 
 import json
+
+# global vars
+dynamoDb = DynamoDb('us-east-1')
+table_name = 'leecounty'
 
 # Create your views here.
 def index(request):
@@ -32,6 +37,10 @@ def ajx_propertydata(request):
     ajxCall = AjaxCall(ajxUrl, data, 'post')
     response = ajxCall.makeCall()
 
+    # put records in dynamoDb
+    propertyArray = response.get('response_data').get('Records')
+    dynamoDb.addItems(dynamoDbObj = dynamoDb, table_name = table_name, item_type = 'property', item_array = propertyArray)
+
     return JsonResponse(response)
 
 def ajx_vehicledata(request):
@@ -42,6 +51,10 @@ def ajx_vehicledata(request):
     data    = {'value': postBody.get('nameQuery'), 'direct': 'false', 'skip': '0'}
     ajxCall = AjaxCall(ajxUrl, data, 'post')
     response = ajxCall.makeCall()
+
+    # put records in dynamoDb
+    propertyArray = response.get('response_data').get('Records')
+    dynamoDb.addItems(dynamoDbObj = dynamoDb, table_name = table_name, item_type = 'vehicle', item_array = propertyArray)
 
     return JsonResponse(response)
 

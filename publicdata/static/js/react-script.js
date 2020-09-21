@@ -45,6 +45,7 @@ class SearchForm extends React.Component {
           console.log(propdata);
           this.setState({propertyData: propdata.response_data.Records})
           console.log(this.state.propertyData)
+
           !propdata.hasOwnProperty("error")
               ? this.setState({ message: propdata.success })
               : this.setState({ message: propdata.error, isError: true });

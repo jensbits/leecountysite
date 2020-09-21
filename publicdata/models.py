@@ -1,4 +1,6 @@
 import requests as req
+import boto3
+import json
 
 from django.db import models
 
@@ -34,3 +36,66 @@ class AjaxCall(models.Model):
         }
         
         return returnData
+
+class DynamoDb(models.Model):
+
+    def __init__(self, region):
+        self.region = region
+        self.dynamodb = boto3.resource('dynamodb', region_name = self.region)
+
+    def createTable(self, table_name):
+        tableName = ""
+        try:
+            table = self.dynamodb.create_table(
+                TableName = table_name,
+                KeySchema = [
+                    {
+                        'AttributeName': 'type',
+                        'KeyType': 'HASH'
+                    },
+                    {
+                        'AttributeName': 'idhash',
+                        'KeyType': 'RANGE'
+                    }
+                ],
+                AttributeDefinitions = [
+                    {
+                        'AttributeName': 'type',
+                        'AttributeType': 'S'
+                    },
+                    {
+                        'AttributeName': 'idhash',
+                        'AttributeType': 'S'
+                    }
+                ],
+                ProvisionedThroughput={
+                    'ReadCapacityUnits': 5,
+                    'WriteCapacityUnits': 5
+                }
+            ) 
+            table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
+            tableName = table_name  
+        except:
+            # do something here as you require
+            pass
+
+        return tableName   
+
+    def getTable(self, table_name):
+        return self.dynamodb.Table(table_name)
+
+    def addItems(self, dynamoDbObj, table_name, item_type, item_array):
+        dynamoDbObj.createTable(table_name)
+        table = dynamoDbObj.getTable(table_name)
+        for item in item_array:
+            table.put_item(
+                Item={
+                    'type':   item_type,
+                    'idhash': item.get('IDHash'),
+                    'name':   item.get('OwnerName1'),
+                    'record': json.dumps(item)
+                }
+            )
+        
+
+        

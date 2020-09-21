@@ -13,4 +13,5 @@ ADD requirements.txt /code/
 #Install dependencies
 RUN pip install -r requirements.txt
 RUN pip install requests
+RUN pip install boto3
 ADD . /code/

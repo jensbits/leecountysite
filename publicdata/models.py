@@ -96,6 +96,3 @@ class DynamoDb(models.Model):
                     'record': json.dumps(item)
                 }
             )
-        
-
-        

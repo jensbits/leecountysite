@@ -38,8 +38,8 @@ def ajx_propertydata(request):
     response = ajxCall.makeCall()
 
     # put records in dynamoDb
-    propertyArray = response.get('response_data').get('Records')
-    dynamoDb.addItems(dynamoDbObj = dynamoDb, table_name = table_name, item_type = 'property', item_array = propertyArray)
+    dataArray = response.get('response_data').get('Records')
+    dynamoDb.addItems(dynamoDbObj = dynamoDb, table_name = table_name, item_type = 'property', item_array = dataArray)
 
     return JsonResponse(response)
 
@@ -53,9 +53,7 @@ def ajx_vehicledata(request):
     response = ajxCall.makeCall()
 
     # put records in dynamoDb
-    propertyArray = response.get('response_data').get('Records')
-    dynamoDb.addItems(dynamoDbObj = dynamoDb, table_name = table_name, item_type = 'vehicle', item_array = propertyArray)
+    dataArray = response.get('response_data').get('Records')
+    dynamoDb.addItems(dynamoDbObj = dynamoDb, table_name = table_name, item_type = 'vehicle', item_array = dataArray)
 
     return JsonResponse(response)
-
-    

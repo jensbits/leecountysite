@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from publicdata.models import AjaxCall
 from publicdata.models import DynamoDb
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import json
 
@@ -9,9 +10,11 @@ import json
 dynamoDb = DynamoDb('us-east-1')
 table_name = 'leecounty'
 
+@ensure_csrf_cookie
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    c = {}
+    return render(request, 'index.html', c)
 
 def data(request):
     return render(request, 'data.html')

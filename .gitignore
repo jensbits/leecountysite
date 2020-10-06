@@ -1,4 +1,4 @@
 leecountysite/wsgi.py
 leecountysite/settings.py
-leecountysite/.vscode
-leecountysite/.env
+.vscode
+.env

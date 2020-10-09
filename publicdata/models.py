@@ -2,7 +2,9 @@ import requests as req
 import boto3
 import json
 
+from decimal import Decimal
 from django.db import models
+from boto3.dynamodb.conditions import Key, Attr
 
 # Create your models here.
 class AjaxCall(models.Model):
@@ -88,11 +90,28 @@ class DynamoDb(models.Model):
         dynamoDbObj.createTable(table_name)
         table = dynamoDbObj.getTable(table_name)
         for item in item_array:
-            table.put_item(
-                Item={
-                    'type':   item_type,
-                    'idhash': item.get('IDHash'),
-                    'name':   item.get('OwnerName1'),
-                    'record': json.dumps(item)
-                }
-            )
+            try:
+                item_dump = json.dumps(item)
+                item = json.loads(item_dump, parse_float=Decimal)
+                table.put_item(
+                    Item={
+                        'type':   item_type,
+                        'idhash': item.get('IDHash'),
+                        'name':   item.get('OwnerName1'),
+                        'record': item
+                    }
+                )
+            except:
+                pass
+
+    def queryVehicleItems(self, dynamoDbObj, table_name, make):
+        table = dynamoDbObj.getTable(table_name)
+
+        response = table.query(
+            KeyConditionExpression = Key('type').eq('vehicle'),
+            FilterExpression=Attr('record.Make').eq('FORD')
+        )
+
+        # KeyConditionExpression = Key('type').eq('vehicle'),
+
+        return response['Items']

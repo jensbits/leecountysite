@@ -39,13 +39,14 @@ class SearchForm extends React.Component {
       })
       .then(response => {
           this.setState({ isSubmitting: false });
+          $('#property').addClass('d-none');
           return response.json();
       })
       .then(propdata => {
           console.log(propdata);
           this.setState({propertyData: propdata.response_data.Records})
-          console.log(this.state.propertyData)
-
+          console.log(this.state.propertyData);
+          $('#property').removeClass('d-none');
           !propdata.hasOwnProperty("error")
               ? this.setState({ message: propdata.success })
               : this.setState({ message: propdata.error, isError: true });
@@ -60,12 +61,14 @@ class SearchForm extends React.Component {
         })
         .then(response => {
             this.setState({ isSubmitting: false });
+            $('#vehicle').addClass('d-none');
             return response.json();
         })
         .then(vehdata => {
             console.log(vehdata);
             this.setState({vehicleData: vehdata.response_data.Records})
-            console.log(this.state.vehicleData)
+            console.log(this.state.vehicleData);
+            $('#vehicle').removeClass('d-none');
             !vehdata.hasOwnProperty("error")
                 ? this.setState({ message: vehdata.success })
                 : this.setState({ message: vehdata.error, isError: true });
@@ -127,55 +130,69 @@ class SearchForm extends React.Component {
           {this.state.isSubmitting ? "Searching..." : ""}
         </div>
       </form>
-      <h3>Property Results</h3>
-      <table class="table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Owner Name</th>
-            <th scope="col">Owner Address</th>
-            <th scope="col">Property Address</th>
-            <th scope="col">Value</th>
-            <th scope="col">Tax</th>
-            <th scope="col">Delinquent</th>
-          </tr>
-        </thead>
-      { this.state.propertyData.map(propertyItem => 
+      <div id="property" class="d-none">
+        <h3>Property Results</h3>
+        <table class="table">
+          <thead>
+            <tr class="bg-success" >
+              <th scope="col">Owner Name</th>
+              <th scope="col">Owner Address</th>
+              <th scope="col">Property Address</th>
+              <th scope="col">Value</th>
+              <th scope="col">Tax</th>
+              <th scope="col">Delinquent</th>
+            </tr>
+          </thead>
+        { this.state.propertyData.length == 0 &&
+            <tr><td colspan="6">No propertyData records at this time.</td></tr>
+        }
+        { this.state.propertyData.map(propertyItem => 
           <tr>
             <td>{propertyItem.OwnerName1}</td>
             <td>{propertyItem.OwnerAddress.Line1}{propertyItem.OwnerAddress.Line2.length ? " " + propertyItem.OwnerAddress.Line2 : ""}, 
             &nbsp;{propertyItem.OwnerAddress.City}, {propertyItem.OwnerAddress.State} {propertyItem.OwnerAddress.Zip}</td>
-            <td>{propertyItem.SitusAddress.Line1}, {propertyItem.SitusAddress.City != null ? propertyItem.SitusAddress.City + "," : ""}
+            <td>
+            {propertyItem.SitusAddress.Line1}, {propertyItem.SitusAddress.City != null ? propertyItem.SitusAddress.City + "," : ""}
             {propertyItem.SitusAddress.State} 
-             {propertyItem.SitusAddress.Zip}</td>
+            {propertyItem.SitusAddress.Zip}
+            </td>
             <td>{formatCurrency.format(propertyItem.Values.Appraised)}</td>
             <td>{formatCurrency.format(propertyItem.Values.BaseTax)}<br />({propertyItem.Year})</td>
             <td>{propertyItem.isDelinquent ? "Yes" : "No"}</td>
-            </tr>
-         )}
-      </table>
-      <h3>Vehicle Results</h3>
-      <table class="table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Owner Name</th>
-            <th scope="col">Owner Address</th>
-            <th scope="col">Make/Model</th>
-            <th scope="col">Year</th>
-            <th scope="col">Color</th>
-
           </tr>
-        </thead>
-      { this.state.vehicleData.map(vehicleItem => 
-          <tr>
-            <td>{vehicleItem.OwnerName1}</td>
-            <td>{vehicleItem.OwnerAddress.Line1}{vehicleItem.OwnerAddress.Line2.length ? " " + vehicleItem.OwnerAddress.Line2 : ""}, 
-            &nbsp;{vehicleItem.OwnerAddress.City}, {vehicleItem.OwnerAddress.State} {vehicleItem.OwnerAddress.Zip}</td>
-            <td>{vehicleItem.Make} {vehicleItem.Model}</td>
-            <td>{vehicleItem.ModelYear}</td>
-            <td>{vehicleItem.Color}</td>
+          )}
+        </table>
+      </div>
+      
+      <div id="vehicle" class="d-none">
+        <h3>Vehicle Results</h3>
+        <table class="table">
+          <thead>
+            <tr class="bg-primary">
+              <th scope="col">Owner Name</th>
+              <th scope="col">Owner Address</th>
+              <th scope="col">Make/Model</th>
+              <th scope="col">Year</th>
+              <th scope="col">Color</th>
             </tr>
-         )}
-      </table>
+          </thead>
+        { this.state.vehicleData.length == 0 &&
+            <tr><td colspan="5">No vehicle records at this time. Check the chart for renewal month.</td></tr>
+        }
+        { this.state.vehicleData.map(vehicleItem => 
+            <tr>
+              <td>{vehicleItem.OwnerName1}</td>
+              <td>{vehicleItem.OwnerAddress.Line1}{vehicleItem.OwnerAddress.Line2.length ? " " + vehicleItem.OwnerAddress.Line2 : ""}, 
+              &nbsp;{vehicleItem.OwnerAddress.City}, {vehicleItem.OwnerAddress.State} {vehicleItem.OwnerAddress.Zip}</td>
+              <td>{vehicleItem.Make} {vehicleItem.Model}</td>
+              <td>{vehicleItem.ModelYear}</td>
+              <td>{vehicleItem.Color}</td>
+              </tr>
+          )}
+        </table>
+      </div>
+      
+     
       </div>
       );
     }

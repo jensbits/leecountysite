@@ -8,12 +8,14 @@ import json
 
 # global vars
 dynamoDb = DynamoDb('us-east-1')
-table_name = 'leecounty'
+table_name = 'leecountyrecords'
 
 @ensure_csrf_cookie
 # Create your views here.
 def index(request):
-    c = {}
+    vehicles = dynamoDb.queryVehicleItems(dynamoDbObj = dynamoDb, table_name = table_name, make = 'FORD')
+    
+    c = {"vehicles": vehicles, "message": "hi there!"}
     return render(request, 'index.html', c)
 
 def data(request):

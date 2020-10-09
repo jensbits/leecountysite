@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>Private Public Data</title>
+  <title>Public Private Data</title>
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/sticky-footer.css' %}">
@@ -18,21 +18,32 @@
 <header>
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="#">Fixed navbar</a>
+    <a class="navbar-brand" href="#">Jennifer Kang</a>
   </nav>
 </header>
+
+
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
-    <h1 class="mt-5">Private Public Data</h1>
+    <h1 class="mt-5">Public Private Data</h1>
     <p class="lead"><strong>Search</strong> <small>(last name first for best results)</small></p>
+    <!-- {% for item in vehicles %}
+
+        <p>{{ item.record }}</p>
+    
+    {% endfor %} -->
+   
     <div id="root"></div>
+
     <table class="table table-striped">
       <tbody>
-        <tr class="odd">
-          <th>Renewal Month</th>
-          <th>Last Name Begins With</th>
-        </tr>
+        <thead class="thead-dark">
+          <tr>
+            <th>Renewal Month</th>
+            <th>Last Name Begins With</th>
+          </tr>
+        </thead>
         <tr class="even">
           <td>January</td>
           <td>A, D</td>

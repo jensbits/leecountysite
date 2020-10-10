@@ -122,8 +122,11 @@ class SearchForm extends React.Component {
               Please provide a name.
             </div>
           </div>
-          <div className="col">
+          <div className="col-md-auto">
             <button type="submit" className="btn btn-primary mb-2">Search</button>
+          </div>
+          <div className="col">
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#renewalModal">AL Registration Renewal Months</button>
           </div>
         </div>
         <div className={'message ${this.state.isError && "error"}'}>
@@ -152,9 +155,10 @@ class SearchForm extends React.Component {
             <td>{propertyItem.OwnerAddress.Line1}{propertyItem.OwnerAddress.Line2.length ? " " + propertyItem.OwnerAddress.Line2 : ""}, 
             &nbsp;{propertyItem.OwnerAddress.City}, {propertyItem.OwnerAddress.State} {propertyItem.OwnerAddress.Zip}</td>
             <td>
-            {propertyItem.SitusAddress.Line1}, {propertyItem.SitusAddress.City != null ? propertyItem.SitusAddress.City + "," : ""}
-            {propertyItem.SitusAddress.State} 
-            {propertyItem.SitusAddress.Zip}
+            {propertyItem.SitusAddress && propertyItem.SitusAddress.Line1 ? propertyItem.SitusAddress.Line1 : ""}
+            {propertyItem.SitusAddress && propertyItem.SitusAddress.City  ? ", " +  propertyItem.SitusAddress.City : ""}
+            {propertyItem.SitusAddress && propertyItem.SitusAddress.State ? ", " + propertyItem.SitusAddress.State : ""}
+            {propertyItem.SitusAddress && propertyItem.SitusAddress.Zip   ? ", " + propertyItem.SitusAddress.Zip : ""}
             </td>
             <td>{formatCurrency.format(propertyItem.Values.Appraised)}</td>
             <td>{formatCurrency.format(propertyItem.Values.BaseTax)}<br />({propertyItem.Year})</td>

@@ -36,63 +36,83 @@
    
     <div id="root"></div>
 
-    <table class="table table-striped">
-      <tbody>
-        <thead class="thead-dark">
-          <tr>
-            <th>Renewal Month</th>
-            <th>Last Name Begins With</th>
-          </tr>
-        </thead>
-        <tr class="even">
-          <td>January</td>
-          <td>A, D</td>
-        </tr>
-        <tr class="alt odd">
-          <td>February</td>
-          <td>B</td>
-        </tr>
-        <tr class="even">
-          <td>March</td>
-          <td>C, E</td>
-        </tr>
-        <tr class="alt odd">
-          <td>April</td>
-          <td>F, G, N</td>
-        </tr>
-        <tr class="even">
-          <td>May</td>
-          <td>H, O</td>
-        </tr>
-        <tr class="alt odd">
-          <td>June</td>
-          <td>M, I</td>
-        </tr>
-        <tr class="even">
-          <td>July</td>
-          <td>P, L</td>
-        </tr>
-        <tr class="alt odd">
-          <td>August</td>
-          <td>J, K, R</td>
-        </tr>
-        <tr class="even">
-          <td>September</td>
-          <td>Q, S, T</td>
-        </tr>
-        <tr class="alt odd">
-          <td>October</td>
-          <td>U, V, W, X, Y, Z</td>
-        </tr>
-        <tr class="even">
-          <td>November</td>
-          <td rowspan="2">Commercial and Fleet Vehicles (Except IRP), <br>Manufactured Homes, National Guard</td>
-        </tr>
-      </tbody>
-    </table>
+    
   </div>
 
 </main>
+
+<!-- Modal -->
+<div class="modal fade" id="renewalModal" tabindex="-1" role="dialog" aria-labelledby="renewalModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="renewalModalLabel">Registration Renewal Months</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <tbody>
+            <thead class="thead-dark">
+              <tr>
+                <th>Renewal Month</th>
+                <th>Last Name Begins With</th>
+              </tr>
+            </thead>
+            <tr class="even">
+              <td>January</td>
+              <td>A, D</td>
+            </tr>
+            <tr class="alt odd">
+              <td>February</td>
+              <td>B</td>
+            </tr>
+            <tr class="even">
+              <td>March</td>
+              <td>C, E</td>
+            </tr>
+            <tr class="alt odd">
+              <td>April</td>
+              <td>F, G, N</td>
+            </tr>
+            <tr class="even">
+              <td>May</td>
+              <td>H, O</td>
+            </tr>
+            <tr class="alt odd">
+              <td>June</td>
+              <td>M, I</td>
+            </tr>
+            <tr class="even">
+              <td>July</td>
+              <td>P, L</td>
+            </tr>
+            <tr class="alt odd">
+              <td>August</td>
+              <td>J, K, R</td>
+            </tr>
+            <tr class="even">
+              <td>September</td>
+              <td>Q, S, T</td>
+            </tr>
+            <tr class="alt odd">
+              <td>October</td>
+              <td>U, V, W, X, Y, Z</td>
+            </tr>
+            <tr class="even">
+              <td>November</td>
+              <td rowspan="2">Commercial and Fleet Vehicles (Except IRP), <br>Manufactured Homes, National Guard</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer class="footer mt-auto py-3">
   <div class="container">

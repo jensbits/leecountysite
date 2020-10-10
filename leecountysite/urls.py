@@ -23,5 +23,6 @@ urlpatterns = [
     path('ajx_autocomplete', publicdata_views.ajx_autocomplete, name='ajx_autocomplete'),
     path('ajx_propertydata', publicdata_views.ajx_propertydata, name='ajx_propertydata'),
     path('ajx_vehicledata',  publicdata_views.ajx_vehicledata, name='ajx_vehicledata'),
+     path('ajx_vehiclesearch', publicdata_views.ajx_vehicledata, name='ajx_vehiclesearch'),
     path('admin/', admin.site.urls),
 ]

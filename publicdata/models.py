@@ -104,14 +104,24 @@ class DynamoDb(models.Model):
             except:
                 pass
 
-    def queryVehicleItems(self, dynamoDbObj, table_name, make):
+
+    def queryVehicleItems(self, dynamoDbObj, table_name, make, model):
         table = dynamoDbObj.getTable(table_name)
 
-        response = table.query(
-            KeyConditionExpression = Key('type').eq('vehicle'),
-            FilterExpression=Attr('record.Make').eq('FORD')
+        if len(make) and len(model):
+            response = table.query(
+                KeyConditionExpression = Key('type').eq('vehicle'),
+                FilterExpression = Attr('record.Make').eq(make) & Attr('record.Model').eq(model)
+            )
+        elif len(make):
+            response = table.query(
+                KeyConditionExpression = Key('type').eq('vehicle'),
+                FilterExpression = Attr('record.Make').eq(make)
         )
-
-        # KeyConditionExpression = Key('type').eq('vehicle'),
+        elif len(model):
+            response = table.query(
+                KeyConditionExpression = Key('type').eq('vehicle'),
+                FilterExpression = Attr('record.Model').eq(model)
+        )
 
         return response['Items']

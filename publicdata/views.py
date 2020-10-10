@@ -13,7 +13,7 @@ table_name = 'leecountyrecords'
 @ensure_csrf_cookie
 # Create your views here.
 def index(request):
-    vehicles = dynamoDb.queryVehicleItems(dynamoDbObj = dynamoDb, table_name = table_name, make = 'FORD')
+    vehicles = dynamoDb.queryVehicleItems(dynamoDbObj = dynamoDb, table_name = table_name, make = 'FORD', model = '')
     
     c = {"vehicles": vehicles, "message": "hi there!"}
     return render(request, 'index.html', c)
@@ -60,5 +60,16 @@ def ajx_vehicledata(request):
     # put records in dynamoDb
     dataArray = response.get('response_data').get('Records')
     dynamoDb.addItems(dynamoDbObj = dynamoDb, table_name = table_name, item_type = 'vehicle', item_array = dataArray)
+
+    return JsonResponse(response)
+
+def ajx_vehiclesearch(request):
+    # propertyData = req.post('https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Records', 
+    # data={'value':'', 'direct': 'false', 'skip': '0'})
+    postBody = json.loads(request.body.decode('utf-8'))
+    ajxUrl  = '/ajx_vehiclesearch'
+    data    = {'make': postBody.get('make'), 'model': postBody.get('model')}
+    ajxCall = AjaxCall(ajxUrl, data, 'post')
+    response = ajxCall.makeCall()
 
     return JsonResponse(response)

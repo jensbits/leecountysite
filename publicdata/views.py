@@ -64,12 +64,21 @@ def ajx_vehicledata(request):
     return JsonResponse(response)
 
 def ajx_vehiclesearch(request):
-    # propertyData = req.post('https://d1ebsyxxbc7tep.cloudfront.net/data/68052b5a-d49f-48ac-a1a0-50bce8182ba2/Wildfire/Records', 
-    # data={'value':'', 'direct': 'false', 'skip': '0'})
     postBody = json.loads(request.body.decode('utf-8'))
-    ajxUrl  = '/ajx_vehiclesearch'
-    data    = {'make': postBody.get('make'), 'model': postBody.get('model')}
-    ajxCall = AjaxCall(ajxUrl, data, 'post')
-    response = ajxCall.makeCall()
+    make = postBody.get('make')[0:4].upper()
+    model = postBody.get('model')[0:9].upper()
+    if make == 'TOYO':
+        make = 'TOYT'
+    vehicles = dynamoDb.queryVehicleItems(dynamoDbObj = dynamoDb, table_name = table_name, make = make, model = model)
+    vehicleList = []
+    for veh in vehicles:
+        vehicleList.append(veh.get('record'))
 
-    return JsonResponse(response)
+    returnData = {
+            'response_data':vehicleList,
+            'request_data': postBody,
+            'success': "true"
+        }
+
+    return JsonResponse(returnData)
+

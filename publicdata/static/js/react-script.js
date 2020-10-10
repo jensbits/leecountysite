@@ -43,9 +43,7 @@ class SearchForm extends React.Component {
           return response.json();
       })
       .then(propdata => {
-          console.log(propdata);
           this.setState({propertyData: propdata.response_data.Records})
-          console.log(this.state.propertyData);
           $('#property').removeClass('d-none');
           !propdata.hasOwnProperty("error")
               ? this.setState({ message: propdata.success })
@@ -65,9 +63,10 @@ class SearchForm extends React.Component {
             return response.json();
         })
         .then(vehdata => {
-            console.log(vehdata);
             this.setState({vehicleData: vehdata.response_data.Records})
-            console.log(this.state.vehicleData);
+            $('#vehicleResultsHeading span').text('Record');
+            $('input[name=makeQuery]').val(''),
+            $('input[name=modelQuery]').val(''),
             $('#vehicle').removeClass('d-none');
             !vehdata.hasOwnProperty("error")
                 ? this.setState({ message: vehdata.success })
@@ -101,102 +100,152 @@ class SearchForm extends React.Component {
           thisReactForm.setState({ values: {nameQuery: ui.item.Value} });
           return false;
         } }
-      ).autocomplete( "instance" )._renderItem = function( ul, item ) {
-        return $( "<li></li>" )
-          .append(item.Value )
-          .appendTo( ul );
-      };
+        ).autocomplete( "instance" )._renderItem = function( ul, item ) {
+          return $( "<li></li>" )
+            .append(item.Value )
+            .appendTo( ul );
+        };
+      
+      $(".btn-vehicleSearch").on('click', function(e){
+        e.preventDefault();
+        $('#property').addClass('d-none');
+
+        var $this = $("#vehicleForm"),
+            make  = $this.find('input[name=makeQuery]').val(),
+            model = $this.find('input[name=modelQuery]').val(),
+            token = getCookie('csrftoken');
+
+        $.ajax({
+          method: "POST",
+          url: "/ajx_vehiclesearch",
+          contentType: 'application/json',
+          headers: {
+            'X-CSRFToken': token 
+        },
+          data: JSON.stringify({ "make": make, "model": model })
+        })
+          .done(function( response ) {
+            thisReactForm.setState({vehicleData: response.response_data});
+            $('#vehicleResultsHeading span').text('Search');
+            $('#vehicle').removeClass('d-none');
+          });
+      });
 
     }
   
     render() {
       return (
         <div>
-        <form novalidate="true"  id="searchForm" className="needs-validation" method="post" onSubmit={this.handleSubmit}  
-        ref={el => this.el = el} autoComplete="off">
-        <div className="row">
-          <div className="col">
-            <label className="sr-only" htmlFor="nameQuery">Name</label>
-            <input name="nameQuery" type="text" className="form-control mb-2 mr-sm-2" id="nameQuery" placeHolder="Name" required value={this.state.value} onChange={this.handleChange} />
-            <div className="invalid-feedback">
-              Please provide a name.
+
+          <form novalidate="true"  id="searchForm" className="needs-validation" method="post" onSubmit={this.handleSubmit}  
+          ref={el => this.el = el} autoComplete="off">
+            <div className="row">
+              <div className="col">
+                <label className="sr-only" htmlFor="nameQuery">Name</label>
+                <input name="nameQuery" type="text" className="form-control mb-2 mr-sm-2" id="nameQuery" aria-describedby="nameHelp" placeHolder="Name" required value={this.state.value} onChange={this.handleChange} />
+                <small id="nameHelp" class="form-text text-muted">Last name first or partial name, no commas</small>
+                <div className="invalid-feedback">
+                  Please provide a name.
+                </div>
+              </div>
+              <div className="col-md-auto">
+                <button type="submit" className="btn btn-primary mb-2">Search</button>
+              </div>
+              <div className="col">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#renewalModal">AL Registration Renewal Months</button>
+              </div>
+            </div>
+            <div className={'message ${this.state.isError && "error"}'}>
+              {this.state.isSubmitting ? "Searching..." : ""}
+            </div>
+          </form>
+
+          <div class="row mt-5">
+            <div class="col">
+              <p class="lead"><strong>Search for a Vehicle</strong></p>
+              <form id="vehicleForm" method="post" autoComplete="off">
+                <div className="row">
+                  <div className="col">
+                    <label className="sr-only" htmlFor="makeQuery">Make</label>
+                    <input name="makeQuery" type="text" className="form-control mb-2 mr-sm-2" id="makeQuery" placeHolder="Make" />
+                  </div>
+                  <div className="col">
+                    <label className="sr-only" htmlFor="modelQuery">Model</label>
+                    <input name="modelQuery" type="text" className="form-control mb-2 mr-sm-2" id="modelQuery" placeHolder="Model" />
+                  </div>
+                  <div className="col-md-auto">
+                    <button type="button" className="btn btn-primary btn-vehicleSearch mb-2">Search</button>
+                  </div>
+                </div>
+              </form> 
             </div>
           </div>
-          <div className="col-md-auto">
-            <button type="submit" className="btn btn-primary mb-2">Search</button>
-          </div>
-          <div className="col">
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#renewalModal">AL Registration Renewal Months</button>
-          </div>
-        </div>
-        <div className={'message ${this.state.isError && "error"}'}>
-          {this.state.isSubmitting ? "Searching..." : ""}
-        </div>
-      </form>
-      <div id="property" class="d-none">
-        <h3>Property Results</h3>
-        <table class="table">
-          <thead>
-            <tr class="bg-success" >
-              <th scope="col">Owner Name</th>
-              <th scope="col">Owner Address</th>
-              <th scope="col">Property Address</th>
-              <th scope="col">Value</th>
-              <th scope="col">Tax</th>
-              <th scope="col">Delinquent</th>
-            </tr>
-          </thead>
-        { this.state.propertyData.length == 0 &&
-            <tr><td colspan="6">No propertyData records at this time.</td></tr>
-        }
-        { this.state.propertyData.map(propertyItem => 
-          <tr>
-            <td>{propertyItem.OwnerName1}</td>
-            <td>{propertyItem.OwnerAddress.Line1}{propertyItem.OwnerAddress.Line2.length ? " " + propertyItem.OwnerAddress.Line2 : ""}, 
-            &nbsp;{propertyItem.OwnerAddress.City}, {propertyItem.OwnerAddress.State} {propertyItem.OwnerAddress.Zip}</td>
-            <td>
-            {propertyItem.SitusAddress && propertyItem.SitusAddress.Line1 ? propertyItem.SitusAddress.Line1 : ""}
-            {propertyItem.SitusAddress && propertyItem.SitusAddress.City  ? ", " +  propertyItem.SitusAddress.City : ""}
-            {propertyItem.SitusAddress && propertyItem.SitusAddress.State ? ", " + propertyItem.SitusAddress.State : ""}
-            {propertyItem.SitusAddress && propertyItem.SitusAddress.Zip   ? ", " + propertyItem.SitusAddress.Zip : ""}
-            </td>
-            <td>{formatCurrency.format(propertyItem.Values.Appraised)}</td>
-            <td>{formatCurrency.format(propertyItem.Values.BaseTax)}<br />({propertyItem.Year})</td>
-            <td>{propertyItem.isDelinquent ? "Yes" : "No"}</td>
-          </tr>
-          )}
-        </table>
-      </div>
-      
-      <div id="vehicle" class="d-none">
-        <h3>Vehicle Results</h3>
-        <table class="table">
-          <thead>
-            <tr class="bg-primary">
-              <th scope="col">Owner Name</th>
-              <th scope="col">Owner Address</th>
-              <th scope="col">Make/Model</th>
-              <th scope="col">Year</th>
-              <th scope="col">Color</th>
-            </tr>
-          </thead>
-        { this.state.vehicleData.length == 0 &&
-            <tr><td colspan="5">No vehicle records at this time. Check the chart for renewal month.</td></tr>
-        }
-        { this.state.vehicleData.map(vehicleItem => 
-            <tr>
-              <td>{vehicleItem.OwnerName1}</td>
-              <td>{vehicleItem.OwnerAddress.Line1}{vehicleItem.OwnerAddress.Line2.length ? " " + vehicleItem.OwnerAddress.Line2 : ""}, 
-              &nbsp;{vehicleItem.OwnerAddress.City}, {vehicleItem.OwnerAddress.State} {vehicleItem.OwnerAddress.Zip}</td>
-              <td>{vehicleItem.Make} {vehicleItem.Model}</td>
-              <td>{vehicleItem.ModelYear}</td>
-              <td>{vehicleItem.Color}</td>
+
+          <div id="property" class="mt-5 d-none">
+            <h3>Property Record Results</h3>
+            <table class="table">
+              <thead>
+                <tr class="bg-success" >
+                  <th scope="col">Owner Name</th>
+                  <th scope="col">Owner Address</th>
+                  <th scope="col">Property Address</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Tax</th>
+                  <th scope="col">Delinquent</th>
+                </tr>
+              </thead>
+            { this.state.propertyData.length == 0 &&
+                <tr><td colspan="6">No propertyData records at this time.</td></tr>
+            }
+            { this.state.propertyData.map(propertyItem => 
+              <tr>
+                <td>{propertyItem.OwnerName1}</td>
+                <td>{propertyItem.OwnerAddress.Line1}{propertyItem.OwnerAddress.Line2.length ? " " + propertyItem.OwnerAddress.Line2 : ""}, 
+                &nbsp;{propertyItem.OwnerAddress.City}, {propertyItem.OwnerAddress.State} {propertyItem.OwnerAddress.Zip}</td>
+                <td>
+                {propertyItem.SitusAddress && propertyItem.SitusAddress.Line1 ? propertyItem.SitusAddress.Line1 : ""}
+                {propertyItem.SitusAddress && propertyItem.SitusAddress.City  ? ", " +  propertyItem.SitusAddress.City : ""}
+                {propertyItem.SitusAddress && propertyItem.SitusAddress.State ? ", " + propertyItem.SitusAddress.State : ""}
+                {propertyItem.SitusAddress && propertyItem.SitusAddress.Zip   ? ", " + propertyItem.SitusAddress.Zip : ""}
+                </td>
+                <td>{formatCurrency.format(propertyItem.Values.Appraised)}</td>
+                <td>{formatCurrency.format(propertyItem.Values.BaseTax)}<br />({propertyItem.Year})</td>
+                <td>{propertyItem.isDelinquent ? "Yes" : "No"}</td>
               </tr>
-          )}
-        </table>
-      </div>
+              )}
+            </table>
+          </div>
       
-     
+          <div id="vehicle" class="mt-5 d-none">
+            <h3 id="vehicleResultsHeading">Vehicle <span>Record</span> Results</h3>
+            <table class="table">
+              <thead>
+                <tr class="bg-primary">
+                  <th scope="col">Owner Name</th>
+                  <th scope="col">Owner Address</th>
+                  <th scope="col">Make/Model</th>
+                  <th scope="col">Body&nbsp;Type</th>
+                  <th scope="col">Year</th>
+                  <th scope="col">Color</th>
+                </tr>
+              </thead>
+            { this.state.vehicleData.length == 0 &&
+                <tr><td colspan="5">No vehicle records at this time. Check the chart for renewal month.</td></tr>
+            }
+            { this.state.vehicleData.map(vehicleItem => 
+                <tr>
+                  <td>{vehicleItem.OwnerName1}</td>
+                  <td>{vehicleItem.OwnerAddress.Line1}{vehicleItem.OwnerAddress.Line2.length ? " " + vehicleItem.OwnerAddress.Line2 : ""}, 
+                  &nbsp;{vehicleItem.OwnerAddress.City}, {vehicleItem.OwnerAddress.State} {vehicleItem.OwnerAddress.Zip}</td>
+                  <td>{vehicleItem.Make} {vehicleItem.Model}</td>
+                  <td>{vehicleItem.BodyType}</td>
+                  <td>{vehicleItem.ModelYear}</td>
+                  <td>{vehicleItem.Color}</td>
+                  </tr>
+              )}
+            </table>
+          </div>
+        
       </div>
       );
     }

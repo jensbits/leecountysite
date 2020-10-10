@@ -107,21 +107,28 @@ class DynamoDb(models.Model):
 
     def queryVehicleItems(self, dynamoDbObj, table_name, make, model):
         table = dynamoDbObj.getTable(table_name)
+        response = {"Items": []}
 
         if len(make) and len(model):
             response = table.query(
                 KeyConditionExpression = Key('type').eq('vehicle'),
-                FilterExpression = Attr('record.Make').eq(make) & Attr('record.Model').eq(model)
+                FilterExpression = Attr('record.Make').contains(make) & Attr('record.Model').contains(model),
+                ProjectionExpression="#rec",
+                ExpressionAttributeNames={"#rec": "record"}
             )
         elif len(make):
             response = table.query(
                 KeyConditionExpression = Key('type').eq('vehicle'),
-                FilterExpression = Attr('record.Make').eq(make)
+                FilterExpression = Attr('record.Make').contains(make),
+                ProjectionExpression="#rec",
+                ExpressionAttributeNames={"#rec": "record"}
         )
         elif len(model):
             response = table.query(
                 KeyConditionExpression = Key('type').eq('vehicle'),
-                FilterExpression = Attr('record.Model').eq(model)
+                FilterExpression = Attr('record.Model').contains(model),
+                ProjectionExpression="#rec",
+                ExpressionAttributeNames={"#rec": "record"}
         )
 
         return response['Items']

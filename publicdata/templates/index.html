@@ -27,7 +27,25 @@
 <main role="main" class="flex-shrink-0">
   <div class="container">
     <h1 class="mt-5">Public Private Data: Lee County, Alabama</h1>
-    <p class="lead"><strong>Search Property and Vehicle Records</strong></p>
+    
+    <p class="lead"><strong>Search Property and Vehicle Records Using Lee County API endpoints</strong></p>
+    <p>
+      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#renewalModal">AL Registration Renewal Months
+      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle ml-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+      <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/>
+      <circle cx="8" cy="4.5" r="1"/>
+    </svg>
+      </button>
+
+      <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#caveatsModal">Caveats
+      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle ml-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+      <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/>
+      <circle cx="8" cy="4.5" r="1"/>
+      </svg>
+      </button>
+    </p>
     <!-- {% for item in vehicles %}
 
         <p>{{ item.record }}</p>
@@ -52,6 +70,7 @@
         </button>
       </div>
       <div class="modal-body">
+        <p>Lee County API endpoints only return vehicle information in the month in which the registration is up for renewal according to the following table:</p>
         <table class="table table-striped">
           <tbody>
             <thead class="thead-dark">
@@ -106,6 +125,32 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="caveatsModal" tabindex="-1" role="dialog" aria-labelledby="caveatsModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="caveatsModalLabel">Caveats</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <p>Caveats with strategy to overcome each:</p>
+       <ol>
+           <li>Lee County vehicle records are returned only in renewal month.<br>
+            <em>Strategy to overcome</em>: Set up server cron job to run letter combinations that cover all possible combinations based on month.
+           </li>
+           <li>The application currently only returns the first 20 results from the Lee County API before cross-site protection is applied.<br>
+          <em>Strategy to overcome</em>: Add routine (cron) task to pull records by searching last name alphabetically.</li>
+       </ol>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

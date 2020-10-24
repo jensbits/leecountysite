@@ -107,28 +107,84 @@ class DynamoDb(models.Model):
 
     def queryVehicleItems(self, dynamoDbObj, table_name, make, model):
         table = dynamoDbObj.getTable(table_name)
-        response = {"Items": []}
+        data = []
 
         if len(make) and len(model):
-            response = table.query(
+            response = table.query( 
                 KeyConditionExpression = Key('type').eq('vehicle'),
                 FilterExpression = Attr('record.Make').contains(make) & Attr('record.Model').contains(model),
                 ProjectionExpression="#rec",
-                ExpressionAttributeNames={"#rec": "record"}
-            )
+                ExpressionAttributeNames={"#rec": "record"})
+            data = response['Items']
+
+            # LastEvaluatedKey indicates that there are more results
+            while 'LastEvaluatedKey' in response:
+                response = table.query( 
+                    KeyConditionExpression = Key('type').eq('vehicle'),
+                    FilterExpression = Attr('record.Make').contains(make) & Attr('record.Model').contains(model),
+                    ProjectionExpression="#rec",
+                    ExpressionAttributeNames={"#rec": "record"},
+                    ExclusiveStartKey=response['LastEvaluatedKey'])
+                data.extend(response['Items'])
         elif len(make):
-            response = table.query(
+            response = table.query( 
                 KeyConditionExpression = Key('type').eq('vehicle'),
                 FilterExpression = Attr('record.Make').contains(make),
                 ProjectionExpression="#rec",
-                ExpressionAttributeNames={"#rec": "record"}
-        )
+                ExpressionAttributeNames={"#rec": "record"})
+            data = response['Items']
+
+            # LastEvaluatedKey indicates that there are more results
+            while 'LastEvaluatedKey' in response:
+                response = table.query( 
+                    KeyConditionExpression = Key('type').eq('vehicle'),
+                    FilterExpression = Attr('record.Make').contains(make),
+                    ProjectionExpression="#rec",
+                    ExpressionAttributeNames={"#rec": "record"},
+                    ExclusiveStartKey=response['LastEvaluatedKey'])
+                data.extend(response['Items'])
         elif len(model):
-            response = table.query(
+            response = table.query( 
                 KeyConditionExpression = Key('type').eq('vehicle'),
                 FilterExpression = Attr('record.Model').contains(model),
                 ProjectionExpression="#rec",
-                ExpressionAttributeNames={"#rec": "record"}
-        )
+                ExpressionAttributeNames={"#rec": "record"})
+            data = response['Items']
 
-        return response['Items']
+            # LastEvaluatedKey indicates that there are more results
+            while 'LastEvaluatedKey' in response:
+                response = table.query( 
+                    KeyConditionExpression = Key('type').eq('vehicle'),
+                    FilterExpression = Attr('record.Model').contains(model),
+                    ProjectionExpression="#rec",
+                    ExpressionAttributeNames={"#rec": "record"},
+                    ExclusiveStartKey=response['LastEvaluatedKey'])
+                data.extend(response['Items'])
+
+        return data
+
+
+        # kwargs = {
+        #         "KeyConditionExpression": Key('type').eq('vehicle'),
+        #         "ProjectionExpression": "#rec",
+        #         "ExpressionAttributeNames": {"#rec": "record"}
+        #         }
+
+        # if len(make) and len(model):
+        #     kwargs["FilterExpression"] = Attr('record.Make').contains(make) & Attr('record.Model').contains(model)
+            
+        # elif len(make):
+        #     kwargs["FilterExpression"] = Attr('record.Make').contains(make)
+           
+        # elif len(model):
+        #     kwargs["FilterExpression"] = Attr('record.Model').contains(model)
+
+        # response = table.query(**kwargs)
+        # data = response['Items']
+
+        # # LastEvaluatedKey indicates that there are more results
+        # kwargs["ExclusiveStartKey"] = response['LastEvaluatedKey']
+        
+        # while 'LastEvaluatedKey' in response:
+        #     response = table.query(**kwargs)
+        #     data.extend(response['Items'])

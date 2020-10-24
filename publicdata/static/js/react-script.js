@@ -8,7 +8,13 @@ class SearchForm extends React.Component {
         isSubmitting: false,
         isError: true,
         propertyData: [],
-        vehicleData: []
+        propertyTotal: 0,
+        propertyPagination: [],
+        propertySkip: 0,
+        vehicleData: [],
+        vehicleTotal: 0,
+        vehiclePagination: [],
+        vehicleSkip: 0
       };
   
       this.handleChange = this.handleChange.bind(this);
@@ -32,7 +38,8 @@ class SearchForm extends React.Component {
   
       fetch("/ajx_propertydata", {
           method: "POST",
-          body: JSON.stringify({"nameQuery": this.state.values.nameQuery}),
+          body: JSON.stringify({"nameQuery": this.state.values.nameQuery, "skip": 0}),
+          mode: 'same-origin',
           headers: { 
             "Content-Type": "application/json",
             "X-CSRFToken": csrftoken }
@@ -44,6 +51,7 @@ class SearchForm extends React.Component {
       })
       .then(propdata => {
           this.setState({propertyData: propdata.response_data.Records})
+          this.setState({propertyTotal: propdata.response_data.TotalRecords})
           $('#property').removeClass('d-none');
           !propdata.hasOwnProperty("error")
               ? this.setState({ message: propdata.success })
@@ -52,7 +60,8 @@ class SearchForm extends React.Component {
 
       fetch("/ajx_vehicledata", {
         method: "POST",
-        body: JSON.stringify({"nameQuery": this.state.values.nameQuery}),
+        body: JSON.stringify({"nameQuery": this.state.values.nameQuery, "skip": 0}),
+        mode: 'same-origin',
         headers: { 
           "Content-Type": "application/json",
           "X-CSRFToken": csrftoken }
@@ -64,6 +73,7 @@ class SearchForm extends React.Component {
         })
         .then(vehdata => {
             this.setState({vehicleData: vehdata.response_data.Records})
+            this.setState({vehicleTotal: vehdata.response_data.TotalRecords})
             $('#vehicleResultsHeading span').text('Record');
             $('input[name=makeQuery]').val(''),
             $('input[name=modelQuery]').val(''),
@@ -74,9 +84,21 @@ class SearchForm extends React.Component {
         });
     }
 
+    createPagination(type, n){
+      var elements = [],
+          pages = 20;
+      for(var i = 0; i < pages; i++){
+          elements.push(<li class="page-item"><a class="page-link" href="#">{i}</a></li>);
+      }
+      
+      return elements
+    }
+
     componentDidMount() {
       let thisReactForm = this;
+      let skip = 0;
       this.$el = $(this.el);
+      let csrftoken = getCookie('csrftoken');
       // Bootstrap client-side form validation https://getbootstrap.com/docs/4.0/components/forms/?#validation
       // Loop over them and prevent submission
       var validation = Array.prototype.filter.call(this.$el, function(form) {
@@ -96,7 +118,7 @@ class SearchForm extends React.Component {
         {source: "/ajx_autocomplete", 
         minLength: 2,
         select: function( event, ui ) {
-          $("#nameQuery").val( ui.item.Value );
+          $('#nameQuery').val( ui.item.Value );
           thisReactForm.setState({ values: {nameQuery: ui.item.Value} });
           return false;
         } }
@@ -105,19 +127,41 @@ class SearchForm extends React.Component {
             .append(item.Value )
             .appendTo( ul );
         };
-      
+
+      $("body").on('click', ".property-prev", function(e){
+          e.preventDefault();
+      });
+
+      $("body").on('click', ".property-next", function(e){
+        e.preventDefault();
+        skip = skip + 20;
+        $.ajax({
+          method: 'POST',
+          url: '/ajx_propertydata',
+          contentType: 'application/json',
+          headers: {
+            'X-CSRFToken': csrftoken 
+          },
+            data: JSON.stringify({"nameQuery": thisReactForm.state.values.nameQuery, "skip": skip})
+          })
+          .done(function( response ) {
+            thisReactForm.setState({propertyData: response.response_data.Records})
+          });
+      });
+
       $(".btn-vehicleSearch").on('click', function(e){
         e.preventDefault();
         $('#property').addClass('d-none');
+        $('input[name=nameQuery]').val(' ');
 
-        var $this = $("#vehicleForm"),
+        var $this = $('#vehicleForm'),
             make  = $this.find('input[name=makeQuery]').val(),
             model = $this.find('input[name=modelQuery]').val(),
             token = getCookie('csrftoken');
 
         $.ajax({
-          method: "POST",
-          url: "/ajx_vehiclesearch",
+          method: 'POST',
+          url: '/ajx_vehiclesearch',
           contentType: 'application/json',
           headers: {
             'X-CSRFToken': token 
@@ -151,18 +195,16 @@ class SearchForm extends React.Component {
               <div className="col-md-auto">
                 <button type="submit" className="btn btn-primary mb-2">Search</button>
               </div>
-              <div className="col">
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#renewalModal">AL Registration Renewal Months</button>
-              </div>
+              
             </div>
             <div className={'message ${this.state.isError && "error"}'}>
               {this.state.isSubmitting ? "Searching..." : ""}
             </div>
           </form>
 
-          <div class="row mt-5">
+          <p class="lead mt-5"><strong>Search Vehicle Records Pulled from Lee County by Make and Model </strong></p>
+          <div class="row">
             <div class="col">
-              <p class="lead"><strong>Search for a Vehicle</strong></p>
               <form id="vehicleForm" method="post" autoComplete="off">
                 <div className="row">
                   <div className="col">
@@ -191,7 +233,7 @@ class SearchForm extends React.Component {
                   <th scope="col">Property Address</th>
                   <th scope="col">Value</th>
                   <th scope="col">Tax</th>
-                  <th scope="col">Delinquent</th>
+                  <th scope="col">Paid</th>
                 </tr>
               </thead>
             { this.state.propertyData.length == 0 &&
@@ -210,14 +252,15 @@ class SearchForm extends React.Component {
                 </td>
                 <td>{formatCurrency.format(propertyItem.Values.Appraised)}</td>
                 <td>{formatCurrency.format(propertyItem.Values.BaseTax)}<br />({propertyItem.Year})</td>
-                <td>{propertyItem.isDelinquent ? "Yes" : "No"}</td>
+                <td>{propertyItem.Payment.Status}</td>
               </tr>
               )}
             </table>
+            
           </div>
       
           <div id="vehicle" class="mt-5 d-none">
-            <h3 id="vehicleResultsHeading">Vehicle <span>Record</span> Results</h3>
+            <h3 id="vehicleResultsHeading">Vehicle <span>Record</span></h3>
             <table class="table">
               <thead>
                 <tr class="bg-primary">
@@ -244,6 +287,7 @@ class SearchForm extends React.Component {
                   </tr>
               )}
             </table>
+             
           </div>
         
       </div>
@@ -286,12 +330,7 @@ function autocompleteSearch(value){
       return response.json();
   })
   .then(data => {
-      console.log(data.response_data);
-      return data.response_data
-      // !data.hasOwnProperty("error")
-      //     ? this.setState({ message: data.success })
-      //     : this.setState({ message: data.error, isError: true });
-          
+      return data.response_data; 
   });
 
 }
@@ -300,3 +339,4 @@ var formatCurrency = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
 });
+
